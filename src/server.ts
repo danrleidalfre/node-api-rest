@@ -1,15 +1,18 @@
+import { env } from './env'
 import { fastify } from 'fastify'
+import { knex } from './database'
+import crypto from 'node:crypto'
 
 const app = fastify()
 
-app.get('/hello', () => {
-  return 'Hello 1'
+app.get('/hello', async () => {
+  return await knex('transactions').insert({
+    id: crypto.randomUUID(),
+    title: 'Transaction',
+    amount: 2000,
+  })
 })
 
-app
-  .listen({
-    port: 3333,
-  })
-  .then(() => {
-    console.log('Running')
-  })
+app.listen({
+  port: env.PORT,
+})
